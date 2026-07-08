@@ -2,89 +2,52 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Painel do Monitor - Portaria</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscrição Confirmada!</title>
     <style>
-        body { font-family: sans-serif; background-color: #0b0f19; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
-        .container { background: #171e2e; padding: 35px; border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
-        #loginArea { display: block; }
-        #appArea { display: none; }
-        input { padding: 12px; width: 80%; border-radius: 5px; border: none; margin-bottom: 10px; }
-        button { padding: 12px 25px; background: #0284c7; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #1e1e24; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .card { background-color: #2a2a35; padding: 40px 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); text-align: center; width: 100%; max-width: 450px; }
+        .icon { font-size: 50px; color: #10b981; margin-bottom: 15px; }
+        h1 { margin: 0 0 10px 0; font-size: 24px; color: #10b981; }
+        p { color: #cbd5e1; font-size: 16px; line-height: 1.5; margin-bottom: 25px; }
+        .id-box { background-color: #1e1e24; border: 2px dashed #4f46e5; padding: 15px; border-radius: 8px; font-size: 22px; font-weight: bold; color: #818cf8; letter-spacing: 2px; margin-bottom: 25px; }
+        .alert-box { background-color: #3b3b4f; border-left: 4px solid #f59e0b; padding: 12px; text-align: left; font-size: 14px; color: #e2e8f0; border-radius: 0 6px 6px 0; }
+        .btn-voltar { display: inline-block; margin-top: 25px; color: #a5b4fc; text-decoration: none; font-size: 14px; transition: color 0.2s; }
+        .btn-voltar:hover { color: #818cf8; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-<div class="container" id="boxValidacao">
-    <div id="loginArea">
-        <h1>🔐 Acesso Restrito</h1>
-        <p>Senha de monitor:</p>
-        <input type="password" id="senhaMonitor" placeholder="Senha">
-        <br>
-        <button onclick="verificarSenha()">Entrar</button>
+<div class="card">
+    <div class="icon">✓</div>
+    <h1>Inscrição Concluída!</h1>
+    <p>Olá, <span id="userName" style="color: #fff; font-weight: bold;">participante</span>! Sua vaga foi reservada com sucesso.</p>
+    
+    <label style="font-size: 12px; color: #94a3b8; text-transform: uppercase; display: block; margin-bottom: 5px;">Seu Código Identificador (ID Único)</label>
+    <div class="id-box" id="userId">CF000000</div>
+
+    <div class="alert-box">
+        <strong>Importante:</strong> Um e-mail de confirmação com os detalhes foi enviado para você neste exato momento. Apresente este ID ao monitor no dia do evento para realizar o seu Check-in.
     </div>
 
-    <div id="appArea">
-        <h1>Portaria Maker</h1>
-        <div id="loading">⏳ Processando...</div>
-        <div id="sucesso" style="display:none; background:#15803d; padding:20px; border-radius:10px;">
-            <div id="nomePessoa" style="font-weight:bold; font-size:1.5em;"></div>
-            <div id="faculPessoa"></div>
-            <ul id="listaOficinas" style="list-style:none; padding:0;"></ul>
-        </div>
-        <div id="erro" style="display:none; background:#b91c1c; padding:20px; border-radius:10px;">
-            <span id="mensagemErro"></span>
-        </div>
-    </div>
+    <a href="index.html" class="btn-voltar">← Voltar para o início</a>
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwBbBjMskcC528BroZH-BdluLY-qL1fP_Lc-p-b8r9-eoUiwIEV68ZRMMFgFab4ooRH4w/exec";
-    const SENHA_SECRETA = "Mister2026"; 
-
-    function verificarSenha() {
-        if(document.getElementById('senhaMonitor').value === SENHA_SECRETA) {
-            localStorage.setItem('monitor_autenticado', 'true');
-            iniciarCheckin();
-        } else { alert("Senha incorreta!"); }
-    }
-
-    function iniciarCheckin() {
-        document.getElementById('loginArea').style.display = 'none';
-        document.getElementById('appArea').style.display = 'block';
-        executarCheckin();
-    }
-
-    if(localStorage.getItem('monitor_autenticado') === 'true') iniciarCheckin();
-
-    async function executarCheckin() {
+    // Captura as variáveis passadas via parâmetros pela URL (?id=CFxxxx&nome=xxxx)
+    function obterParametrosURL() {
         const params = new URLSearchParams(window.location.search);
-        const idIngresso = params.get('id');
-        if(!idIngresso) { document.getElementById('loading').innerText = "❌ QR Code não detectado."; return; }
-
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST', mode: 'cors', body: JSON.stringify({ action: "checkin", id: idIngresso })
-            });
-            const result = await response.json();
-            document.getElementById('loading').style.display = 'none';
-
-            if(result.sucesso) {
-                document.getElementById('sucesso').style.display = 'block';
-                document.getElementById('nomePessoa').innerText = result.nome;
-                document.getElementById('faculPessoa').innerText = result.instituicao;
-                result.oficinas.forEach(oficina => {
-                    if(oficina && oficina !== "Nenhuma") {
-                        let li = document.createElement('li');
-                        li.innerText = "🛠️ " + oficina;
-                        document.getElementById('listaOficinas').appendChild(li);
-                    }
-                });
-            } else {
-                document.getElementById('erro').style.display = 'block';
-                document.getElementById('mensagemErro').innerText = result.mensagem;
-            }
-        } catch(e) { document.getElementById('loading').innerText = "Erro de conexão."; }
+        return {
+            id: params.get('id') || 'Não gerado',
+            nome: params.get('nome') || 'Participante'
+        };
     }
+
+    // Altera dinamicamente os textos da página com os dados reais
+    const dadosUsuario = obterParametrosURL();
+    document.getElementById('userName').textContent = dadosUsuario.nome;
+    document.getElementById('userId').textContent = dadosUsuario.id;
 </script>
 </body>
 </html>
