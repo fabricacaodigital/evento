@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portaria - Check-in</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0b0f19; color: white; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+        .container { background: #171e2e; padding: 35px; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 92%; max-width: 420px; transition: background 0.3s ease; }
+        h1 { margin-top: 0; font-size: 1.6em; color: #94a3b8; border-bottom: 1px solid #2d3748; padding-bottom: 12px; }
+        .loading { font-size: 1.3em; color: #f59e0b; animation: piscar 1s infinite; font-weight: bold; }
+        @keyframes piscar { 50% { opacity: 0.4; } }
+        .tela-sucesso { display: none; background-color: #15803d; padding: 25px; border-radius: 10px; margin-top: 15px; }
+        .tela-erro { display: none; background-color: #b91c1c; padding: 25px; border-radius: 10px; margin-top: 15px; font-weight: bold; font-size: 1.2em; }
+        .guest-name { font-size: 1.8em; font-weight: bold; margin: 10px 0 5px 0; text-transform: uppercase; }
+        .guest-facul { font-size: 1.2em; color: #e2e8f0; margin-bottom: 20px; font-style: italic; }
+        .oficinas-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; text-align: left; margin-top: 15px; }
+        .oficinas-box li { background: #1e293b; margin-bottom: 6px; padding: 10px; border-radius: 6px; font-weight: bold; border-left: 4px solid #0284c7; list-style-type: none;}
+    </style>
+</head>
+<body>
+
+<div class="container" id="boxValidacao">
+    <h1>Controle de Portaria</h1>
+    <div id="loading" class="loading">⏳ Processando Credencial...</div>
+    
+    <div id="sucesso" class="tela-sucesso">
+        <div style="font-weight: bold; font-size: 1.1em;">✓ ACESSO LIBERADO</div>
+        <div class="guest-name" id="nomePessoa">Carregando...</div>
+        <div class="guest-facul" id="faculPessoa">Carregando...</div>
+        <div class="oficinas-box"><ul id="listaOficinas" style="padding:0; margin:0;"></ul></div>
+    </div>
+
+    <div id="erro" class="tela-erro"><span id="mensagemErro">Erro crítico detectado.</span></div>
+</div>
+
+<script>
+    // SUA NOVA URL DO GOOGLE:
+    const API_URL = "https://script.google.com/macros/s/AKfycbwBbBjMskcC528BroZH-BdluLY-qL1fP_Lc-p-b8r9-eoUiwIEV68ZRMMFgFab4ooRH4w/exec"; 
+
+    window.onload = async function() {
+        const params = new URLSearchParams(window.location.search);
+        const idIngresso = params.get('id');
+
+        if(!idIngresso) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('erro').style.display = 'block';
+            document.getElementById('boxValidacao').style.backgroundColor = '#b91c1c';
+            document.getElementById('mensagemErro').innerText = "❌ ERRO: QR Code inválido (Código ausente).";
+            return;
+        }
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST', mode: 'cors', body: JSON.stringify({ action: "checkin", id: idIngresso })
+            });
+            
+            const result = await response.json();
+            document.getElementById('loading').style.display = 'none';
+
+            if(result.sucesso) {
+                document.getElementById('boxValidacao').style.backgroundColor = '#15803d';
+                document.getElementById('sucesso').style.display = 'block';
+                document.getElementById('nomePessoa').innerText = result.nome;
+                document.getElementById('faculPessoa').innerText = result.instituicao;
+                
+                const ul = document.getElementById('listaOficinas');
+                result.oficinas.forEach(oficina => {
+                    if(oficina && oficina.trim() !== "Nenhuma") {
+                        let li = document.createElement('li');
+                        li.innerText = "🛠️ " + oficina;
+                        ul.appendChild(li);
+                    }
+                });
+            } else {
+                document.getElementById('boxValidacao').style.backgroundColor = '#b91c1c';
+                document.getElementById('erro').style.display = 'block';
+                document.getElementById('mensagemErro').innerText = result.mensagem;
+            }
+        } catch(error) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('erro').style.display = 'block';
+            document.getElementById('boxValidacao').style.backgroundColor = '#b91c1c';
+            document.getElementById('mensagemErro').innerText = "Erro de rede.";
+        }
+    };
+</script>
+</body>
+</html>
