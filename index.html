@@ -23,12 +23,15 @@
 <div class="container">
     <div id="formularioArea">
         <h1>Confirme sua Presença</h1>
-        <p style="text-align:center; color:#64748b; margin-bottom: 20px;">Gere seu QR Code de acesso oficial para o evento.</p>
+        <p style="text-align:center; color:#64748b; margin-bottom: 20px;">Gere seu QR Code oficial para o evento.</p>
         
         <form id="formInscricao">
             <label>Nome Completo</label>
             <input type="text" id="nome" required>
             
+            <label>Matrícula</label>
+            <input type="text" id="matricula" required>
+
             <div style="display: flex; gap: 12px;">
                 <div style="flex: 1;">
                     <label>Idade</label>
@@ -72,7 +75,7 @@
 
     <div id="areaQRCode">
         <h2 style="color: #16a34a; margin-bottom: 5px;">✓ Presença Confirmada!</h2>
-        <p style="color: #64748b; font-size: 0.9em;">Tire um PRINT da tela e apresente na entrada.</p>
+        <p style="color: #64748b; font-size: 0.9em;">Seu QR Code foi enviado para o seu e-mail.</p>
         <img id="imgQR" src="" alt="QR Code">
         <h3 id="mostraID" style="color: #2563eb; letter-spacing: 1px;"></h3>
         <div class="aviso">⚠️ Válido por 3 dias.</div>
@@ -80,18 +83,18 @@
 </div>
 
 <script>
-    // SUA NOVA URL DO GOOGLE:
     const API_URL = "https://script.google.com/macros/s/AKfycbwBbBjMskcC528BroZH-BdluLY-qL1fP_Lc-p-b8r9-eoUiwIEV68ZRMMFgFab4ooRH4w/exec"; 
 
     document.getElementById('formInscricao').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnSubmit');
-        btn.innerText = "Processando...";
+        btn.innerText = "Enviando e-mail...";
         btn.disabled = true;
 
         const dados = {
             action: "registrar",
             nome: document.getElementById('nome').value,
+            matricula: document.getElementById('matricula').value,
             idade: document.getElementById('idade').value,
             instituicao: document.getElementById('instituicao').value,
             email: document.getElementById('email').value,
@@ -111,7 +114,6 @@
                 document.getElementById('formularioArea').style.display = 'none';
                 document.getElementById('areaQRCode').style.display = 'block';
                 
-                // O LINK EXATO DO SEU NOVO SITE SEPARADO NO GITHUB:
                 const linkPortaria = `https://fabricacaodigital.github.io/evento/checkin.html?id=${result.id}`;
                 const qrImageURL = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(linkPortaria)}`;
                 
