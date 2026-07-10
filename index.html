@@ -3,124 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscrição - Fábrica Digital</title>
+    <title>Lista de Confirmação - CEFET</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #1e1e24; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background-color: #2a2a35; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); width: 100%; max-width: 500px; }
-        h2 { text-align: center; margin-bottom: 25px; color: #4f46e5; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 6px; font-size: 14px; color: #cbd5e1; }
-        input, select { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #4b5563; background-color: #374151; color: #fff; font-size: 16px; }
-        input:focus, select:focus { outline: 2px solid #4f46e5; }
-        button { width: 100%; padding: 14px; background-color: #4f46e5; border: none; border-radius: 6px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
-        button:hover { background-color: #4338ca; }
-        button:disabled { background-color: #6b7280; cursor: not-allowed; }
-        .loading-text { text-align: center; font-style: italic; color: #a1a1aa; margin-top: 15px; display: none; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f5f9; color: #1e293b; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 480px; box-sizing: border-box; }
+        h1 { color: #2563eb; text-align: center; margin-top: 0; }
+        label { display: block; margin: 15px 0 5px; font-weight: bold; font-size: 0.9em; color: #475569; }
+        input, select { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; background-color: #f8fafc; font-family: inherit; }
+        button { width: 100%; padding: 12px; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1.1em; cursor: pointer; margin-top: 25px; transition: 0.2s; }
+        button:hover { background-color: #1d4ed8; }
+        
+        #areaQRCode { display: none; text-align: center; margin-top: 25px; border-top: 2px dashed #cbd5e1; padding-top: 25px; }
+        #areaQRCode img { border: 10px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; margin: 15px 0; }
+        .aviso { color: #e11d48; font-weight: bold; margin-top: 15px; font-size: 0.9em; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Inscrição em Oficinas</h2>
-    <form id="cadastroForm">
-        <div class="form-group">
-            <label for="nome">Nome Completo:</label>
-            <input type="text" id="nome" name="nome" required placeholder="Digite seu nome completo">
-        </div>
+    <div id="formularioArea">
+        <h1>Confirme sua Presença</h1>
+        <p style="text-align:center; color:#64748b; margin-bottom: 20px;">Gere seu QR Code de acesso oficial para o evento.</p>
+        
+        <form id="formInscricao">
+            <label>Nome Completo</label>
+            <input type="text" id="nome" required>
+            
+            <div style="display: flex; gap: 12px;">
+                <div style="flex: 1;">
+                    <label>Idade</label>
+                    <input type="number" id="idade" required>
+                </div>
+                <div style="flex: 2;">
+                    <label>Instituição</label>
+                    <input type="text" id="instituicao" placeholder="Ex: CEFET, UFRJ" required>
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label for="matricula">Matrícula:</label>
-            <input type="text" id="matricula" name="matricula" required placeholder="Digite sua matrícula">
-        </div>
-
-        <div class="form-group">
-            <label for="email">E-mail (Institucional ou Pessoal):</label>
-            <input type="email" id="email" name="email" required placeholder="seuemail@exemplo.com">
-        </div>
-
-        <div class="form-group">
-            <label for="whatsapp">WhatsApp / Telefone:</label>
-            <input type="tel" id="whatsapp" name="whatsapp" required placeholder="(XX) XXXXX-XXXX">
-        </div>
-
-        <div class="form-group">
-            <label for="idade">Idade:</label>
-            <input type="number" id="idade" name="idade" required min="0" max="120" placeholder="Ex: 20">
-        </div>
-
-        <div class="form-group">
-            <label for="oficina1">Oficina 1 (Obrigatória):</label>
-            <select id="oficina1" name="oficina1" required>
-                <option value="" disabled selected>Selecione uma oficina</option>
-                <option value="Modelagem">Modelagem</option>
-                <option value="CNC">CNC</option>
-                <option value="Prototipagem">Prototipagem</option>
+            <label>E-mail</label>
+            <input type="email" id="email" required>
+            
+            <label>WhatsApp</label>
+            <input type="tel" id="whatsapp" placeholder="Ex: 21999999999" required>
+            
+            <label>Oficina 1 (Obrigatória)</label>
+            <select id="oficina1" required>
+                <option value="">Selecione...</option>
+                <option value="Corte a Laser">Corte a Laser</option>
+                <option value="Impressão 3D">Impressão 3D</option>
+                <option value="Arduino">Arduino</option>
             </select>
-        </div>
 
-        <div class="form-group">
-            <label for="oficina2">Oficina 2 (Opcional):</label>
-            <select id="oficina2" name="oficina2">
-                <option value="Nenhuma" selected>Nenhuma</option>
-                <option value="Modelagem">Modelagem</option>
-                <option value="CNC">CNC</option>
-                <option value="Prototipagem">Prototipagem</option>
+            <label>Oficina 2 (Opcional)</label>
+            <select id="oficina2">
+                <option value="Nenhuma">Nenhuma</option>
+                <option value="Montagem Robótica">Montagem Robótica</option>
             </select>
-        </div>
 
-        <div class="form-group">
-            <label for="oficina3">Oficina 3 (Opcional):</label>
-            <select id="oficina3" name="oficina3">
-                <option value="Nenhuma" selected>Nenhuma</option>
-                <option value="Modelagem">Modelagem</option>
-                <option value="CNC">CNC</option>
-                <option value="Prototipagem">Prototipagem</option>
+            <label>Oficina 3 (Opcional)</label>
+            <select id="oficina3">
+                <option value="Nenhuma">Nenhuma</option>
+                <option value="Eletrônica">Eletrônica</option>
             </select>
-        </div>
 
-        <button type="submit" id="btnEnviar">Concluir Inscrição</button>
-        <div class="loading-text" id="statusMensagem">Enviando e-mail de confirmação...</div>
-    </form>
+            <button type="submit" id="btnSubmit">Confirmar Presença</button>
+        </form>
+    </div>
+
+    <div id="areaQRCode">
+        <h2 style="color: #16a34a; margin-bottom: 5px;">✓ Presença Confirmada!</h2>
+        <p style="color: #64748b; font-size: 0.9em;">Tire um PRINT da tela e apresente na entrada.</p>
+        <img id="imgQR" src="" alt="QR Code">
+        <h3 id="mostraID" style="color: #2563eb; letter-spacing: 1px;"></h3>
+        <div class="aviso">⚠️ Válido por 3 dias.</div>
+    </div>
 </div>
 
 <script>
-    // Sua URL oficial configurada para comunicação direta
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx85SSZvsRslK644X6eqaQE1_i6IXbQ4MnwBGh8sSf-Wz_fCuRoMg_x5HCdmvdIWuGj5w/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbweQPNxz9oCX3phVVBXFvbhVFmugtfftEgXKmyUGP3lbaW0wZWOE-DfmE2-7OiVa2dv6A/exec"; 
 
-    document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+    document.getElementById('formInscricao').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        const btn = document.getElementById('btnEnviar');
-        const statusMsg = document.getElementById('statusMensagem');
-        
+        const btn = document.getElementById('btnSubmit');
+        btn.innerText = "Processando...";
         btn.disabled = true;
-        statusMsg.style.display = 'block';
 
-        const formData = new FormData(this);
-        const urlParams = new URLSearchParams(formData).toString();
+        const dados = {
+            action: "registrar",
+            nome: document.getElementById('nome').value,
+            idade: document.getElementById('idade').value,
+            instituicao: document.getElementById('instituicao').value,
+            email: document.getElementById('email').value,
+            whatsapp: document.getElementById('whatsapp').value,
+            oficina1: document.getElementById('oficina1').value,
+            oficina2: document.getElementById('oficina2').value,
+            oficina3: document.getElementById('oficina3').value
+        };
 
-        // Envia os parâmetros via requisição POST segura
-        fetch(WEB_APP_URL + "?" + urlParams, {
-            method: 'POST'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === 'success') {
-                // Redireciona para a página de confirmação passando o ID e o Nome pela URL
-                window.location.href = `confirmacao.html?id=${data.id}&nome=${encodeURIComponent(data.nome)}`;
-            } else {
-                alert('Erro ao processar inscrição: ' + data.message);
-                btn.disabled = false;
-                statusMsg.style.display = 'none';
-            }
-        })
-        .catch(error => {
-            alert('Erro de comunicação. Certifique-se de que atualizou a implantação no Apps Script.');
-            console.error('Erro:', error);
-            btn.disabled = false;
-            statusMsg.style.display = 'none';
-        });
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST', mode: 'cors', body: JSON.stringify(dados)
+            });
+            const result = await response.json();
+
+            if(result.sucesso) {
+                document.getElementById('formularioArea').style.display = 'none';
+                document.getElementById('areaQRCode').style.display = 'block';
+                
+                const linkPortaria = `https://fabricacaodigital.github.io/evento/checkin.html?id=${result.id}`;
+                const qrImageURL = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(linkPortaria)}`;
+                
+                document.getElementById('imgQR').src = qrImageURL;
+                document.getElementById('mostraID').innerText = `ID: ${result.id}`;
+            } else { alert("Erro: " + result.mensagem); }
+        } catch (error) { alert("Erro de conexão."); }
+        finally { btn.innerText = "Confirmar Presença"; btn.disabled = false; }
     });
 </script>
 </body>
